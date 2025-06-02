@@ -1,18 +1,22 @@
+import 'package:ace/pages/questions/widgets/shake_widget.dart';
+import 'package:ace/providers/favorite_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:ace/models/question_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class QuestionDetailPage extends StatefulWidget {
+class QuestionDetailPage extends ConsumerStatefulWidget {
   final QuestionModel question;
 
   const QuestionDetailPage({super.key, required this.question});
 
   @override
-  State<QuestionDetailPage> createState() => _QuestionDetailPageState();
+  ConsumerState<QuestionDetailPage> createState() => _QuestionDetailPageState();
 }
 
-class _QuestionDetailPageState extends State<QuestionDetailPage> {
+class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   bool isLiked = false;
   int likeCount = 0;
+  final shakeKey = GlobalKey<ShakeWidgetState>();
 
   @override
   void initState() {
@@ -25,29 +29,28 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
       isLiked = !isLiked;
       likeCount += isLiked ? 1 : -1;
     });
-   
-  }
-
-  void addToFavorites() {
- 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Added to favorites')),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final question = widget.question;
+    final favoriteNotifier = ref.read(favorProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Details'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark_add_outlined),
-            onPressed: addToFavorites,
-            tooltip: 'Add to favorites',
+          ShakeWidget(
+            key: shakeKey,
+            child: IconButton(
+              icon: Image.asset('assets/icons/add.png', color: Theme.of(context).primaryColor,),
+
+              onPressed: () {
+                shakeKey.currentState?.shake();
+                favoriteNotifier.addToFav(question);
+              },
+            ),
           ),
         ],
       ),
@@ -88,13 +91,14 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: question.tags.map((tag) {
-                return Chip(
-                  label: Text('#$tag'),
-                  backgroundColor: theme.colorScheme.secondary,
-                  labelStyle: const TextStyle(color: Colors.white),
-                );
-              }).toList(),
+              children:
+                  question.tags.map((tag) {
+                    return Chip(
+                      label: Text('#$tag'),
+                      backgroundColor: theme.colorScheme.secondary,
+                      labelStyle: const TextStyle(color: Colors.white),
+                    );
+                  }).toList(),
             ),
 
             const SizedBox(height: 30),
@@ -108,10 +112,7 @@ class _QuestionDetailPageState extends State<QuestionDetailPage> {
                   ),
                   onPressed: toggleLike,
                 ),
-                Text(
-                  '$likeCount',
-                  style: theme.textTheme.bodyLarge,
-                ),
+                Text('$likeCount', style: theme.textTheme.bodyLarge),
                 const SizedBox(width: 24),
                 Icon(Icons.comment, color: theme.primaryColor),
                 const SizedBox(width: 8),

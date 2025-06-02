@@ -3,6 +3,7 @@ import 'package:ace/models/question_model.dart';
 import 'package:ace/pages/questions/widgets/question_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FundamentalsPage extends ConsumerStatefulWidget {
   final String title;
@@ -35,7 +36,10 @@ class _FundamentalsPageState extends ConsumerState<FundamentalsPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          Icon(Icons.star, size: 30, color: Theme.of(context).primaryColor),
+           IconButton(
+          onPressed: () {
+            context.push('/favorite');
+          }, icon: Image.asset('assets/icons/favorite.png',width: 30, height: 30,))
         ],
       ),
       body: Column(

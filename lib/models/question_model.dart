@@ -60,39 +60,46 @@ class QuestionModel {
   }
 
   factory QuestionModel.fromMap(Map<String, dynamic> data) {
-    return QuestionModel(
-      id: data['id'] ?? '',
-      question: data['question'] ?? '',
-      answer: data['answer'] ?? '',
-      mainCategory: _mainCategoryFromString(data['mainCategory']),
-      subCategory: data['subCategory'] ?? '',
-      tags: List<String>.from(data['tags'] ?? []),
-      difficulty: _difficultyFromString(data['difficulty']),
-      createdAt: data['createdAt'],
-      updatedAt: data['updatedAt'],
-      likes: data['likes'], 
-      comments: data['comments'] != null
-          ? List<String>.from(data['comments'])
-          : null,
-    );
+  Timestamp? _parseTimestamp(dynamic value) {
+    if (value is Timestamp) return value;
+    if (value is int) return Timestamp.fromMillisecondsSinceEpoch(value);
+    return null;
   }
 
-  Map<String, dynamic> toMap(String docId) {
-    final now = Timestamp.now();
-    return {
-      'id': docId,
-      'question': question,
-      'answer': answer,
-      'mainCategory': mainCategory.name,
-      'subCategory': subCategory,
-      'tags': tags,
-      'difficulty': difficulty.name,
-      'createdAt': createdAt ?? now,
-      'updatedAt': updatedAt ?? now,
-      if (likes != null) 'likes': likes,
-      if (comments != null) 'comments': comments,
-    };
-  }
+  return QuestionModel(
+    id: data['id'] ?? '',
+    question: data['question'] ?? '',
+    answer: data['answer'] ?? '',
+    mainCategory: _mainCategoryFromString(data['mainCategory']),
+    subCategory: data['subCategory'] ?? '',
+    tags: List<String>.from(data['tags'] ?? []),
+    difficulty: _difficultyFromString(data['difficulty']),
+    createdAt: _parseTimestamp(data['createdAt']),
+    updatedAt: _parseTimestamp(data['updatedAt']),
+    likes: data['likes'],
+    comments: data['comments'] != null
+        ? List<String>.from(data['comments'])
+        : null,
+  );
+}
+
+Map<String, dynamic> toMap([String? docId]) {
+  final now = Timestamp.now();
+  return {
+    'id': docId ?? id ?? '',
+    'question': question,
+    'answer': answer,
+    'mainCategory': mainCategory.name,
+    'subCategory': subCategory,
+    'tags': tags,
+    'difficulty': difficulty.name,
+    'createdAt': (createdAt ?? now).millisecondsSinceEpoch,
+    'updatedAt': (updatedAt ?? now).millisecondsSinceEpoch,
+    if (likes != null) 'likes': likes,
+    if (comments != null) 'comments': comments,
+  };
+}
+
 
   static Difficulty _difficultyFromString(String value) {
     return Difficulty.values.firstWhere(
