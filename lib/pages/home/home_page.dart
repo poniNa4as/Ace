@@ -1,9 +1,11 @@
 import 'package:ace/pages/home/widgets/carousel_widget.dart';
 import 'package:ace/pages/home/widgets/category_swiper.dart';
+import 'package:ace/pages/home/widgets/sidebar.dart';
 import 'package:ace/pages/home/widgets/slogan.dart';
 import 'package:ace/pages/home/widgets/subscription_home.dart';
+import 'package:ace/pages/home/widgets/suggest_question_card.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -11,20 +13,34 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Sidebar(controller: SidebarXController(selectedIndex: 0, extended: false),),
       appBar: AppBar(
         backgroundColor: Color(0xFFF57C00),
-        title: Center(child: Text('Ace')),
-        leading: Image.asset(
-          'assets/icons/question.png',
-          width: 15,
-          fit: BoxFit.contain,
+        title: Center(
+          child: Text(
+            'Ace',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 3,
+            ),
+          ),
+        ),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.push('/admin');
-            },
-            icon: Icon(Icons.add),
+          Image.asset(
+            'assets/icons/question.png',
+            width: 40,
+            fit: BoxFit.contain,
           ),
         ],
       ),
@@ -40,6 +56,8 @@ class HomePage extends StatelessWidget {
               SubscriptionHome(),
               SizedBox(height: 20),
               CategorySwiper(),
+              SizedBox(height: 20),
+              SuggestQuestionCard(),
             ],
           ),
         ),

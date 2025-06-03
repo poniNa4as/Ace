@@ -1,4 +1,5 @@
 import 'package:ace/models/question_model.dart';
+import 'package:ace/pages/add_question/add_question_page.dart';
 import 'package:ace/pages/admin_page.dart';
 import 'package:ace/pages/basic/basic_page.dart';
 import 'package:ace/pages/favorite/favorite_page.dart';
@@ -8,6 +9,7 @@ import 'package:ace/pages/home/home_page.dart';
 import 'package:ace/pages/languages/languages_page.dart';
 import 'package:ace/pages/questions/question_page.dart';
 import 'package:ace/pages/questions/single_question/question_details_page.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -18,11 +20,22 @@ final router = GoRouter(
     GoRoute(path: '/basic', builder: (context, state) => BasicPage()),
     GoRoute(path: '/languages', builder: (context, state) => LanguagesPage()),
     GoRoute(path: '/favorite', builder: (context, state) => FavoritePage()),
+    GoRoute(path: '/add', builder: (context, state) => AddQuestionPage()),
     GoRoute(
       path: '/question_details',
       builder: (context, state) {
-        final q = state.extra as QuestionModel;
-        return QuestionDetailPage(question: q);
+        final extra = state.extra;
+        if (extra is Map<String, dynamic>) {
+          final q = extra['question'] as QuestionModel?;
+          final flag = extra['flag'] as bool? ?? true; 
+
+          if (q != null) {
+            return QuestionDetailPage(question: q, flag: flag);
+          }
+        }
+        return Scaffold(
+          body: Center(child: Text('Invalid or missing arguments')),
+        );
       },
     ),
     GoRoute(

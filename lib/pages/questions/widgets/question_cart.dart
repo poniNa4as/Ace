@@ -8,11 +8,15 @@ class QuestionCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool flag = true;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: GestureDetector(
         onTap: () {
-          context.push('/question_details', extra: question);
+          context.push('/question_details', extra: {
+            'question': question,
+            'flag': flag
+          });
         },
         child: Container(
           decoration: BoxDecoration(

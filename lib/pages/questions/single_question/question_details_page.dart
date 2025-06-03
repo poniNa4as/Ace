@@ -1,13 +1,17 @@
-import 'package:ace/pages/questions/widgets/shake_widget.dart';
-import 'package:ace/providers/favorite_notifier.dart';
+import 'package:ace/pages/questions/single_question/widgets/add_to_favorites_button.dart';
 import 'package:flutter/material.dart';
 import 'package:ace/models/question_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class QuestionDetailPage extends ConsumerStatefulWidget {
   final QuestionModel question;
+  final bool flag;
 
-  const QuestionDetailPage({super.key, required this.question});
+  const QuestionDetailPage({
+    super.key,
+    required this.question,
+    required this.flag,
+  });
 
   @override
   ConsumerState<QuestionDetailPage> createState() => _QuestionDetailPageState();
@@ -16,7 +20,6 @@ class QuestionDetailPage extends ConsumerStatefulWidget {
 class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   bool isLiked = false;
   int likeCount = 0;
-  final shakeKey = GlobalKey<ShakeWidgetState>();
 
   @override
   void initState() {
@@ -35,23 +38,13 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final question = widget.question;
-    final favoriteNotifier = ref.read(favorProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Details'),
         actions: [
-          ShakeWidget(
-            key: shakeKey,
-            child: IconButton(
-              icon: Image.asset('assets/icons/add.png', color: Theme.of(context).primaryColor,),
-
-              onPressed: () {
-                shakeKey.currentState?.shake();
-                favoriteNotifier.addToFav(question);
-              },
-            ),
-          ),
+          if (widget.flag)
+          AddToFavoritesButton(question: question)
         ],
       ),
       body: SingleChildScrollView(

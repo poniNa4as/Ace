@@ -10,9 +10,13 @@ class FavoriteDismissWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool showFavoriteButton = false;
     return GestureDetector(
       onTap: () {
-        context.push('/question_details', extra: q);
+        context.push('/question_details', extra: {
+          'question': q,
+          'flag': showFavoriteButton,
+        });
       },
       child: Dismissible(
         key: Key(q.id ?? ''),

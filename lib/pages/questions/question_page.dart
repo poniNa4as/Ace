@@ -5,7 +5,6 @@ import 'package:ace/pages/questions/widgets/custom_button.dart';
 import 'package:ace/pages/questions/widgets/question_cart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class QuestionPage extends ConsumerStatefulWidget {
   final String title;
@@ -52,12 +51,6 @@ class _QuestionPageState extends ConsumerState<QuestionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-         IconButton(
-          onPressed: () {
-            context.push('/favorite');
-          }, icon: Image.asset('assets/icons/favorite.png',width: 30, height: 30,))
-        ],
       ),
       body: Column(
         children: [
