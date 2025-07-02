@@ -2,6 +2,7 @@ import 'package:ace/models/question_model.dart';
 import 'package:ace/pages/add_question/add_question_page.dart';
 import 'package:ace/pages/admin_page.dart';
 import 'package:ace/pages/basic/basic_page.dart';
+import 'package:ace/pages/chat/chat_page.dart';
 import 'package:ace/pages/favorite/favorite_page.dart';
 import 'package:ace/pages/frameworks/frameworks_page.dart';
 import 'package:ace/pages/fundamentals/fundamentals_page.dart';
@@ -21,13 +22,14 @@ final router = GoRouter(
     GoRoute(path: '/languages', builder: (context, state) => LanguagesPage()),
     GoRoute(path: '/favorite', builder: (context, state) => FavoritePage()),
     GoRoute(path: '/add', builder: (context, state) => AddQuestionPage()),
+    GoRoute(path: '/chat', builder: (context, state) => ChatPage()),
     GoRoute(
       path: '/question_details',
       builder: (context, state) {
         final extra = state.extra;
         if (extra is Map<String, dynamic>) {
           final q = extra['question'] as QuestionModel?;
-          final flag = extra['flag'] as bool? ?? true; 
+          final flag = extra['flag'] as bool? ?? true;
 
           if (q != null) {
             return QuestionDetailPage(question: q, flag: flag);

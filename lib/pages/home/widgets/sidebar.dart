@@ -57,6 +57,9 @@ class Sidebar extends StatelessWidget {
         SidebarXItem(icon: Icons.chat_sharp, label: 'Chat', onTap: () {
           context.push('/chat');
         }),
+        SidebarXItem(icon: Icons.admin_panel_settings, label: 'Admin', onTap: () {
+          context.push('/admin');
+        })
       ],
     );
   }

@@ -4,16 +4,18 @@ import 'package:ace/pages/home/widgets/sidebar.dart';
 import 'package:ace/pages/home/widgets/slogan.dart';
 import 'package:ace/pages/home/widgets/subscription_home.dart';
 import 'package:ace/pages/home/widgets/suggest_question_card.dart';
+import 'package:ace/providers/sidebar_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:sidebarx/sidebarx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(sidebarControllerProvider);
     return Scaffold(
-      drawer: Sidebar(controller: SidebarXController(selectedIndex: 0, extended: false),),
+      drawer: Sidebar(controller: controller),
       appBar: AppBar(
         backgroundColor: Color(0xFFF57C00),
         title: Center(

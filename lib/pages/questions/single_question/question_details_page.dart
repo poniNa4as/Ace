@@ -1,4 +1,5 @@
 import 'package:ace/pages/questions/single_question/widgets/add_to_favorites_button.dart';
+import 'package:ace/providers/favorite_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:ace/models/question_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,15 +21,18 @@ class QuestionDetailPage extends ConsumerStatefulWidget {
 class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   bool isLiked = false;
   int likeCount = 0;
+  List<String> comentaries = [];
 
   @override
   void initState() {
     super.initState();
     likeCount = widget.question.likes ?? 0;
+    
   }
 
   void toggleLike() {
     setState(() {
+
       isLiked = !isLiked;
       likeCount += isLiked ? 1 : -1;
     });
@@ -36,6 +40,14 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final favoriteList = ref.watch(favorProvider);
+    
+    final 
+    bool isFavorite = favoriteList.maybeWhen(
+      data: (data) => data.any((el) => el.id == widget.question.id),
+      orElse: () => false,
+    );
+
     final theme = Theme.of(context);
     final question = widget.question;
 
@@ -43,8 +55,19 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
       appBar: AppBar(
         title: const Text('Details'),
         actions: [
-          if (widget.flag)
-          AddToFavoritesButton(question: question)
+          AnimatedSwitcher(
+            duration: const Duration(seconds: 1),
+            transitionBuilder:
+                (child, animation) =>
+                    FadeTransition(opacity: animation, child: child),
+            child:
+                isFavorite
+                    ? const SizedBox.shrink()
+                    : AddToFavoritesButton(
+                      key: const ValueKey('AddButton'),
+                      question: question,
+                    ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -107,7 +130,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                 ),
                 Text('$likeCount', style: theme.textTheme.bodyLarge),
                 const SizedBox(width: 24),
-                Icon(Icons.comment, color: theme.primaryColor),
+                IconButton( onPressed: () {}, icon: Icon(Icons.comment), color: theme.primaryColor),
                 const SizedBox(width: 8),
                 Text(
                   '${question.comments?.length ?? 0}',
